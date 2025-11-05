@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
+import Profile from "./pages/Profile";
 import { useAuth0 } from "@auth0/auth0-react";
 
 function App() {
@@ -38,6 +39,14 @@ function App() {
           path="/dashboard"
           element={
             isAuthenticated ? <Dashboard /> : <Navigate to="/login" replace />
+          }
+        />
+
+        {/* Protected Profile route */}
+        <Route
+          path="/profile"
+          element={
+            isAuthenticated ? <Profile /> : <Navigate to="/login" replace />
           }
         />
 

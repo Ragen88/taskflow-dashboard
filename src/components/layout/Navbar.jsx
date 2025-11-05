@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth0 } from "@auth0/auth0-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const { logout, user } = useAuth0();
+  const navigate = useNavigate();
 
   return (
     <nav className="flex items-center justify-between px-6 py-4 bg-background shadow-md border-b border-border">
@@ -19,7 +21,16 @@ export default function Navbar() {
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>{user.name}</DropdownMenuItem>
+            <DropdownMenuLabel>Account</DropdownMenuLabel>
+            <DropdownMenuLabel className="flex flex-col">
+              <span className="font-medium">{user.name}</span>
+              {user.email && (
+                <span className="text-xs text-muted-foreground">{user.email}</span>
+              )}
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel>TaskFlow</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => navigate("/profile")}>Profile</DropdownMenuItem>
             <DropdownMenuItem
               className="text-destructive"
               onClick={() =>
