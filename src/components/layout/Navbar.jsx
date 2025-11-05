@@ -1,12 +1,29 @@
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth0 } from "@auth0/auth0-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
+import { getUserProfile, saveUserProfile, clearUserProfile } from "@/utils/userStorage";
 
 export default function Navbar() {
-  const { logout, user } = useAuth0();
+  const { logout, user, isAuthenticated } = useAuth0();
   const navigate = useNavigate();
+  const [profileData, setProfileData] = useState(null);
+
+  // Load profile data from localStorage
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      // Save Auth0 user data to localStorage if not already saved
+      const storedProfile = getUserProfile();
+      if (!storedProfile || storedProfile.sub !== user.sub) {
+        saveUserProfile(user);
+        setProfileData(user);
+      } else {
+        setProfileData(storedProfile);
+      }
+    }
+  }, [user, isAuthenticated]);
 
   return (
     <nav className="flex items-center justify-between px-6 py-4 bg-background shadow-md border-b border-border">
@@ -16,16 +33,16 @@ export default function Navbar() {
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Avatar className="w-10 h-10 cursor-pointer">
-              <AvatarImage src={user.picture} alt={user.name} />
-              <AvatarFallback>{user.name[0]}</AvatarFallback>
+              <AvatarImage src={profileData?.pictureDataUrl || profileData?.picture || user?.picture} alt={profileData?.name || user?.name} />
+              <AvatarFallback>{(profileData?.name || user?.name)?.[0]}</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Account</DropdownMenuLabel>
             <DropdownMenuLabel className="flex flex-col">
-              <span className="font-medium">{user.name}</span>
-              {user.email && (
-                <span className="text-xs text-muted-foreground">{user.email}</span>
+              <span className="font-medium">{profileData?.name || user?.name}</span>
+              {(profileData?.email || user?.email) && (
+                <span className="text-xs text-muted-foreground">{profileData?.email || user?.email}</span>
               )}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
@@ -33,9 +50,10 @@ export default function Navbar() {
             <DropdownMenuItem onClick={() => navigate("/profile")}>Profile</DropdownMenuItem>
             <DropdownMenuItem
               className="text-destructive"
-              onClick={() =>
-                logout({ logoutParams: { returnTo: window.location.origin } })
-              }
+              onClick={() => {
+                clearUserProfile();
+                logout({ logoutParams: { returnTo: window.location.origin } });
+              }}
             >
               Logout
             </DropdownMenuItem>

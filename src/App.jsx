@@ -3,6 +3,7 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import { useAuth0 } from "@auth0/auth0-react";
+import SessionTimeout from "./components/SessionTimeout";
 
 function App() {
   const { isAuthenticated, isLoading } = useAuth0();
@@ -17,8 +18,10 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
-      <Routes>
+    <>
+      <SessionTimeout />
+      <BrowserRouter>
+        <Routes>
         {/* Default path "/" → decide based on login */}
         <Route
           path="/"
@@ -54,6 +57,7 @@ function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
+    </>
   );
 }
 
