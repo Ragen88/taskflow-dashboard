@@ -22,7 +22,7 @@ export default function TaskBoard({ selectedBoard }) {
   const columns = ["To Do", "In Progress", "Done"];
 
   return (
-    <div className="flex gap-6">
+    <div className="flex flex-col md:flex-row gap-4 md:gap-6">
       {columns.map((status) => {
         const [, drop] = useDrop(() => ({
           accept: "TASK",
@@ -35,11 +35,11 @@ export default function TaskBoard({ selectedBoard }) {
           <div
             key={status}
             ref={drop}
-            className={`flex-1 p-4 rounded-md min-h-[300px] ${
+            className={`flex-1 p-3 sm:p-4 rounded-md min-h-[280px] ${
               status === selectedBoard ? "bg-primary/10" : "bg-muted"
             }`}
           >
-            <h2 className="font-bold mb-4">{status}</h2>
+            <h2 className="font-bold mb-3 sm:mb-4">{status}</h2>
             {status === "To Do" && <AddTaskForm onAdd={handleAddTask} />}
             {tasks
               .filter((task) => task.status === status)
