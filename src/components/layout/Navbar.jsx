@@ -5,6 +5,8 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
 import { getUserProfile, saveUserProfile, clearUserProfile } from "@/utils/userStorage";
+import { Switch } from "@/components/ui/switch";
+
 
 export default function Navbar() {
   const { logout, user, isAuthenticated } = useAuth0();
@@ -24,6 +26,16 @@ export default function Navbar() {
       }
     }
   }, [user, isAuthenticated]);
+
+  const [isDark, setIsDark] = useState(() =>
+  document.documentElement.classList.contains("dark")
+);
+
+const toggleDarkMode = () => {
+  document.documentElement.classList.toggle("dark");
+  setIsDark(!isDark);
+};
+
 
   return (
     <nav className="flex items-center justify-between px-6 py-4 bg-background shadow-md border-b border-border">
@@ -48,6 +60,11 @@ export default function Navbar() {
             <DropdownMenuSeparator />
             <DropdownMenuLabel>TaskFlow</DropdownMenuLabel>
             <DropdownMenuItem onClick={() => navigate("/profile")}>Profile</DropdownMenuItem>
+            <DropdownMenuItem className="flex justify-between items-center">
+  Dark Mode
+  <Switch checked={isDark} onCheckedChange={toggleDarkMode} />
+</DropdownMenuItem>
+
             <DropdownMenuItem
               className="text-destructive"
               onClick={() => {
