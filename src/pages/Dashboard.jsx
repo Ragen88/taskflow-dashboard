@@ -18,6 +18,7 @@ export default function Dashboard() {
         <div className="hidden md:block">
           <Sidebar selected={selectedBoard} onSelect={setSelectedBoard} />
         </div>
+
         <main className="flex-1 p-4 sm:p-6">
           {/* Mobile board selector */}
           <div className="md:hidden mb-4 flex gap-2 overflow-x-auto">
@@ -38,7 +39,8 @@ export default function Dashboard() {
               </Button>
             ))}
           </div>
-          <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-foreground">{selectedBoard} Board</h2>
+
+          {/* Removed the dashboard title */}
           <DndProvider backend={HTML5Backend}>
             <TaskBoard selectedBoard={selectedBoard} />
           </DndProvider>

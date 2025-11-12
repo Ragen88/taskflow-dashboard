@@ -1,27 +1,62 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { HomeIcon, CheckIcon, ClockIcon } from "lucide-react";
+import {
+  HomeIcon,
+  CheckIcon,
+  ClockIcon,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
 const boards = [
-  { name: "To Do", icon: <ClockIcon className="w-4 h-4 mr-2" /> },
-  { name: "In Progress", icon: <HomeIcon className="w-4 h-4 mr-2" /> },
-  { name: "Done", icon: <CheckIcon className="w-4 h-4 mr-2" /> },
+  { name: "To Do", icon: <ClockIcon className="w-4 h-4" /> },
+  { name: "In Progress", icon: <HomeIcon className="w-4 h-4" /> },
+  { name: "Done", icon: <CheckIcon className="w-4 h-4" /> },
 ];
 
 export default function Sidebar({ selected, onSelect }) {
+  const [collapsed, setCollapsed] = useState(false);
+
   return (
-    <aside className="w-64 bg-muted p-4 flex flex-col gap-4 border-r border-border h-full">
-      <h2 className="font-bold text-lg mb-2 text-foreground">Boards</h2>
-      {boards.map((board) => (
+    <aside
+      className={`${
+        collapsed ? "w-16" : "w-64"
+      } bg-muted border-r border-border h-full flex flex-col transition-all duration-300`}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between p-3">
+        {!collapsed && (
+          <h2 className="font-bold text-lg text-foreground">Boards</h2>
+        )}
         <Button
-          key={board.name}
-          variant={selected === board.name ? "default" : "ghost"}
-          className="justify-start gap-2"
-          onClick={() => onSelect(board.name)}
+          variant="ghost"
+          size="icon"
+          onClick={() => setCollapsed(!collapsed)}
         >
-          {board.icon}
-          {board.name}
+          {collapsed ? (
+            <ChevronRight className="w-4 h-4" />
+          ) : (
+            <ChevronLeft className="w-4 h-4" />
+          )}
         </Button>
-      ))}
+      </div>
+
+      {/* Boards */}
+      <nav className="flex flex-col gap-2 px-2">
+        {boards.map((board) => (
+          <Button
+            key={board.name}
+            variant={selected === board.name ? "default" : "ghost"}
+            className={`transition-all ${
+              collapsed ? "justify-center px-2" : "justify-start gap-2 px-3"
+            }`}
+            onClick={() => onSelect(board.name)}
+          >
+            {board.icon}
+            {!collapsed && <span>{board.name}</span>}
+          </Button>
+        ))}
+      </nav>
     </aside>
   );
 }
